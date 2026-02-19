@@ -1628,7 +1628,7 @@ if( playerClass == "PRIEST" ) then
 
 					-- Patch 1.15.1 CheckInteractDistance is not able to be used on friendly targets in combat
 					local InCombatLockdownRestriction
-					if isClassicEra then
+					if isClassicEra or isTBC or isWrath then
 						InCombatLockdownRestriction = InCombatLockdown() and not UnitCanAttack("player", unit)
 					else
 						InCombatLockdownRestriction = false
