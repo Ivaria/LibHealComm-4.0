@@ -1,7 +1,7 @@
 if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then return end
 
 local major = "LibHealComm-4.0"
-local minor = 115
+local minor = 116
 assert(LibStub, format("%s requires LibStub.", major))
 
 local HealComm = LibStub:NewLibrary(major, minor)
@@ -2491,7 +2491,7 @@ local function loadHealList(pending, amount, stack, endTime, ticksLeft, ...)
 		for i = 1, select("#", ...), 2 do
 			local guid = select(i, ...)
 			local decompGUID = guid and decompressGUID[guid]
-			amount = not pending.hasVariableTicks and tonumber((select(i + 1, ...))) or loadHealAmount(string.split("@", amount))
+			amount = not pending.hasVariableTicks and tonumber((select(i + 1, ...))) or loadHealAmount(strsplit("@", amount))
 			if( decompGUID and amount ) then
 				updateRecord(pending, decompGUID, amount, stack, endTime, ticksLeft)
 				tinsert(tempPlayerList, decompGUID)
@@ -2781,10 +2781,10 @@ function HealComm:CHAT_MSG_ADDON(prefix, message, channel, sender)
 		parseHotHeal(casterGUID, true, spellID, tonumber(arg1), tonumber(extraArg), tonumber(arg2), strsplit(",", arg3))
 		-- New variable tick hot - VH::<spellID>:<amount>:<isMulti>:<tickInterval>:target1,target2...
 	elseif( commType == "VH" and arg1 and arg4 ) then
-		parseHotHeal(casterGUID, false, spellID, arg1, tonumber(arg3), tonumber(extraArg), string.split(",", arg4))
+		parseHotHeal(casterGUID, false, spellID, arg1, tonumber(arg3), tonumber(extraArg), strsplit(",", arg4))
 		-- New updated variable tick hot - U::<spellID>:amount1@amount2@amount3:<tickTotal>:target1,target2...
 	elseif( commType == "VU" and arg1 and arg3 ) then
-		parseHotHeal(casterGUID, true, spellID, arg1, tonumber(arg2), tonumber(extraArg), string.split(",", arg3))
+		parseHotHeal(casterGUID, true, spellID, arg1, tonumber(arg2), tonumber(extraArg), strsplit(",", arg3))
 		-- New updated bomb hot - UB:<totalTicks>:<spellID>:<bombAmount>:target1,target2:<amount>:<tickInterval>:target1,target2...
 	elseif( commType == "UB" and arg1 and arg5 ) then
 		parseHotHeal(casterGUID, true, spellID, tonumber(arg3), tonumber(extraArg), tonumber(arg4), strsplit(",", arg5))
@@ -3091,7 +3091,7 @@ function HealComm:UNIT_SPELLCAST_START(unit, cast, spellID)
 		parseDirectHeal(playerGUID, spellID, amount, (endTime - startTime) / 1000, strsplit(",", targets))
 		sendMessage(format("D:%.3f:%d:%d:%s", (endTime - startTime) / 1000, spellID or 0, amount or "", targets))
 	elseif( bitType == CHANNEL_HEALS ) then
-		parseChannelHeal(playerGUID, spellID, amount, ticks, string.split(",", targets))
+		parseChannelHeal(playerGUID, spellID, amount, ticks, strsplit(",", targets))
 		if spellName == "Penance" then
 			-- Penance has its first tick already done by the time this arrives
 			sendMessage(string.format("C::%d:%d:%s:%s", spellID, amount, ticks - 1, targets))
